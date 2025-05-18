@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<jms:config name="JMS_Config" doc:name="JMS Config" doc:id="73e971c8-cfa1-414a-bbd2-ead8ebdb6c43" >
+		<jms:active-mq-connection username="admin" password="admin" >
+			<jms:factory-configuration brokerUrl="tcp://localhost:61616" />
+		</jms:active-mq-connection>
+	</jms:config>
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="ec6b27aa-b933-40f9-9df4-0757cae7eae3" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<flow name="jms-demoFlow-Queue-Publisher" doc:id="5fad9778-832c-48a8-b64e-2568958ea3c3" >
+		<http:listener doc:name="Listener" doc:id="c7ab8bbe-27f8-4364-9a1a-37204993f3a1" config-ref="HTTP_Listener_config" path="/jms"/>
+		<jms:publish doc:name="Publish" doc:id="bd331fea-5585-479f-9061-1c9a25c853cd" config-ref="JMS_Config" destination="TestMulesoftQueue">
+			<jms:message outboundContentType="application/json" />
+		</jms:publish>
+	</flow>
+	<flow name="jms-demoFlow-queue-consumer-1" doc:id="f6b77b39-6a5e-41e9-b4fa-5f545062de3e" >
+		<jms:listener doc:name="On New Message" doc:id="0180f051-3734-4b27-9724-b1003b019e5f" config-ref="JMS_Config" destination="TestMulesoftQueue" inboundContentType="application/json">
+			<jms:consumer-type >
+				<jms:queue-consumer />
+			</jms:consumer-type>
+		</jms:listener>
+		<logger level="INFO" doc:name="Logger" doc:id="9310e332-2c33-473d-b895-2dc0bc97c888" message="Queue Consumer 1: #[payload]"/>
+	</flow>
+	<flow name="jms-demoFlow-queue-consumer-2" doc:id="4d582302-9d40-4678-9774-2f71cec7d2dd" >
+		<jms:listener doc:name="On New Message" doc:id="f997f085-bfe4-4d60-acc5-01c72f9548e4" config-ref="JMS_Config" destination="TestMulesoftQueue" inboundContentType="application/json">
+			<jms:consumer-type >
+				<jms:queue-consumer />
+			</jms:consumer-type>
+		</jms:listener>
+		<logger level="INFO" doc:name="Logger" doc:id="bddea8ef-a19b-4e43-89a7-80dbf73b4181" message="Queue Consumer 2: #[payload]" />
+	</flow>
+	<flow name="jms-demoFlow-Topic-Publisher" doc:id="3b69adea-335e-4c1c-a008-61483558faec" >
+		<http:listener doc:name="Listener" doc:id="a6141c7f-f9c1-46fb-90b3-0256b1d0e24c" config-ref="HTTP_Listener_config" path="/jms"/>
+		<jms:publish doc:name="Publish" doc:id="3fbb6079-4f95-4858-bcf8-3a00deda1dd1" config-ref="JMS_Config" destination="TestMulesoftTopic" destinationType="TOPIC">
+			<jms:message outboundContentType="application/json" />
+		</jms:publish>
+	</flow>
+		<flow name="jms-demoFlow-topic-consumer-1" doc:id="8f5daa5b-ab44-4cc5-8065-79f6cbc01791" >
+		<jms:listener doc:name="On New Message" doc:id="a5499f69-31e4-46c7-ab82-d201420d896d" config-ref="JMS_Config" destination="TestMulesoftTopic" inboundContentType="application/json" numberOfConsumers="1">
+			<jms:consumer-type >
+				<jms:topic-consumer />
+			
+</jms:consumer-type>
+		</jms:listener>
+		<logger level="INFO" doc:name="Logger" doc:id="9cb9db05-f280-4a6b-8db2-3e7ee86f6397" message="Topic Consumer 1: #[payload]"/>
+	</flow>
+	<flow name="jms-demoFlow-topic-consumer-2" doc:id="52eaafed-b264-4ce8-af1a-fbc7a610b5d5" >
+		<jms:listener doc:name="On New Message" doc:id="e1449551-6330-4e29-8af2-2df43fb1a908" config-ref="JMS_Config" destination="TestMulesoftTopic" inboundContentType="application/json" numberOfConsumers="1">
+			<jms:consumer-type >
+				<jms:topic-consumer />
+			
+</jms:consumer-type>
+		</jms:listener>
+		<logger level="INFO" doc:name="Logger" doc:id="35843f60-77d8-46ba-b3b5-06a02bddcc05" message="Topic Consumer 2: #[payload]" />
+	</flow>
+</mule>
