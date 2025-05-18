@@ -49,6 +49,7 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 </jms:consumer-type>
 		</jms:listener>
 		<logger level="INFO" doc:name="Logger" doc:id="9cb9db05-f280-4a6b-8db2-3e7ee86f6397" message="Topic Consumer 1: #[payload]"/>
+		<logger level="INFO" doc:name="Logger" doc:id="d87a5cbd-1699-4b7b-aeed-c6fed1a4a487" message="payload"/>
 	</flow>
 	<flow name="jms-demoFlow-topic-consumer-2" doc:id="52eaafed-b264-4ce8-af1a-fbc7a610b5d5" >
 		<jms:listener doc:name="On New Message" doc:id="e1449551-6330-4e29-8af2-2df43fb1a908" config-ref="JMS_Config" destination="TestMulesoftTopic" inboundContentType="application/json" numberOfConsumers="1">
